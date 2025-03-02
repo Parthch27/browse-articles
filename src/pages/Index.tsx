@@ -32,16 +32,17 @@ const Index = () => {
           className="h-[600px] mb-16"
         />
         
-        {/* Latest Articles - Horizontal Layout */}
+        {/* Latest Articles - Horizontal Layout with Smaller Cards */}
         <div className="mt-16 mb-16">
           <h2 className="text-2xl font-semibold mb-8">Latest Articles</h2>
           <div className="overflow-x-auto pb-4">
-            <div className="flex space-x-6 min-w-max">
+            <div className="flex space-x-4 min-w-max">
               {remainingArticles.slice(0, 6).map((article, index) => (
-                <div key={article.id} className="w-[300px] flex-shrink-0">
+                <div key={article.id} className="w-[240px] flex-shrink-0">
                   <ArticleCard 
                     article={article} 
                     index={index}
+                    className="scale-90 origin-top-left"
                   />
                 </div>
               ))}
