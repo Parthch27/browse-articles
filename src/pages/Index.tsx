@@ -32,17 +32,34 @@ const Index = () => {
           className="h-[600px] mb-16"
         />
         
+        {/* Latest Articles - Horizontal Layout */}
+        <div className="mt-16 mb-16">
+          <h2 className="text-2xl font-semibold mb-8">Latest Articles</h2>
+          <div className="overflow-x-auto pb-4">
+            <div className="flex space-x-6 min-w-max">
+              {remainingArticles.slice(0, 6).map((article, index) => (
+                <div key={article.id} className="w-[300px] flex-shrink-0">
+                  <ArticleCard 
+                    article={article} 
+                    index={index}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+        
         {/* Main Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mt-16">
-          {/* Main Articles */}
+          {/* Main Articles - Removed as now horizontal above */}
           <div className="lg:col-span-8">
-            <h2 className="text-2xl font-semibold mb-8">Latest Articles</h2>
+            <h2 className="text-2xl font-semibold mb-8">More Articles</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-12">
-              {remainingArticles.slice(0, 6).map((article, index) => (
+              {remainingArticles.slice(6, 10).map((article, index) => (
                 <ArticleCard 
                   key={article.id} 
                   article={article} 
-                  index={index}
+                  index={index + 6}
                 />
               ))}
             </div>
@@ -53,12 +70,12 @@ const Index = () => {
             <div className="sticky top-24">
               <h2 className="text-xl font-semibold mb-6">Popular Articles</h2>
               <div className="space-y-6">
-                {remainingArticles.slice(6).map((article, index) => (
+                {remainingArticles.slice(10, 13).map((article, index) => (
                   <ArticleCard 
                     key={article.id} 
                     article={article} 
                     variant="compact" 
-                    index={index + 6}
+                    index={index + 10}
                   />
                 ))}
               </div>
