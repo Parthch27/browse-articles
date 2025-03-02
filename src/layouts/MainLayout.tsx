@@ -40,6 +40,21 @@ const MainLayout = ({ children }: MainLayoutProps) => {
     };
   }, [location.pathname]);
 
+  // Add Playfair Display for headings across the site
+  useEffect(() => {
+    const style = document.createElement('style');
+    style.textContent = `
+      h1, h2, h3, h4, h5, h6 {
+        font-family: 'Playfair Display', Georgia, serif;
+      }
+    `;
+    document.head.appendChild(style);
+    
+    return () => {
+      document.head.removeChild(style);
+    };
+  }, []);
+
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
