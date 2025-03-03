@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import Sidebar from "@/components/Sidebar";
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -40,25 +41,13 @@ const MainLayout = ({ children }: MainLayoutProps) => {
     };
   }, [location.pathname]);
 
-  // Add Playfair Display for headings across the site
-  useEffect(() => {
-    const style = document.createElement('style');
-    style.textContent = `
-      h1, h2, h3, h4, h5, h6 {
-        font-family: 'Inter', sans-serif;
-      }
-    `;
-    document.head.appendChild(style);
-    
-    return () => {
-      document.head.removeChild(style);
-    };
-  }, []);
-
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <Navbar />
-      <main className="flex-grow pt-16">{children}</main>
+      <div className="flex flex-1 pt-16">
+        <Sidebar />
+        <main className="flex-grow p-4 md:p-6 lg:p-8">{children}</main>
+      </div>
       <Footer />
     </div>
   );
