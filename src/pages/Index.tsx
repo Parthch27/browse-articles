@@ -1,6 +1,5 @@
-
 import { useState, useEffect } from "react";
-import { articles } from "@/data/articles";
+import { articles, categories } from "@/data/articles";
 import MainLayout from "@/layouts/MainLayout";
 import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "react-router-dom";
@@ -44,9 +43,6 @@ const Index = () => {
     { icon: <Star size={18} />, name: "Topics", path: "/topics" },
   ];
 
-  // Extract unique categories for the sidebar
-  const categories = Array.from(new Set(articles.map(article => article.category.name)));
-
   return (
     <MainLayout>
       <div className={`min-h-screen transition-opacity duration-700 ${isLoaded ? "opacity-100" : "opacity-0"}`}>
@@ -82,15 +78,15 @@ const Index = () => {
               {categories.map((category, index) => (
                 <Link
                   key={index}
-                  to={`/category/${category.toLowerCase()}`}
+                  to={`/category/${category.slug}`}
                   className={cn(
                     "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium",
-                    location.pathname === `/category/${category.toLowerCase()}` 
+                    location.pathname === `/category/${category.slug}` 
                       ? "bg-primary text-primary-foreground" 
                       : "text-foreground hover:bg-primary/10 transition-colors"
                   )}
                 >
-                  {category}
+                  {category.name}
                 </Link>
               ))}
             </div>
