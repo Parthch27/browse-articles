@@ -45,7 +45,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
     const style = document.createElement('style');
     style.textContent = `
       h1, h2, h3, h4, h5, h6 {
-        font-family: 'Playfair Display', Georgia, serif;
+        font-family: 'Inter', sans-serif;
       }
     `;
     document.head.appendChild(style);
@@ -56,9 +56,9 @@ const MainLayout = ({ children }: MainLayoutProps) => {
   }, []);
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-background">
       <Navbar />
-      <main className="flex-grow pt-24">{children}</main>
+      <main className="flex-grow pt-16">{children}</main>
       <Footer />
     </div>
   );
