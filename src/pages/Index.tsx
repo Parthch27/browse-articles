@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { articles } from "@/data/articles";
 import MainLayout from "@/layouts/MainLayout";
@@ -181,14 +182,6 @@ const Index = () => {
                       
                       {/* Post Content - Truncated Text */}
                       <div className="text-sm line-clamp-3 mb-2">{article.excerpt}</div>
-                      
-                      {/* Post Image - If Available */}
-                      {article.image && (
-                        <div 
-                          className="w-full h-48 bg-cover bg-center rounded-md mb-2"
-                          style={{ backgroundImage: `url(${article.image})` }}
-                        />
-                      )}
                       
                       {/* Post Actions */}
                       <div className="flex items-center gap-4 text-xs text-muted-foreground">
