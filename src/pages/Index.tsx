@@ -1,10 +1,9 @@
-
 import { useState, useEffect } from "react";
 import { articles } from "@/data/articles";
 import MainLayout from "@/layouts/MainLayout";
 import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "react-router-dom";
-import { ArrowUp, ArrowDown, MessageCircle, Share2, Bookmark, MoreHorizontal, MessageSquare, Clock, Fire, TrendingUp, Star } from "lucide-react";
+import { ArrowUp, ArrowDown, MessageCircle, Share2, Bookmark, MoreHorizontal, MessageSquare, Clock, Flame, TrendingUp, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const Index = () => {
@@ -124,7 +123,7 @@ const Index = () => {
                     size="sm" 
                     className="text-xs rounded-full"
                   >
-                    <Fire size={14} className="mr-1" />
+                    <Flame size={14} className="mr-1" />
                     Hot
                   </Button>
                   <Button 
