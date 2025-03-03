@@ -45,13 +45,6 @@ const ArticleCard = ({
         )}
       >
         <div className="flex gap-4 items-start">
-          <div 
-            className={cn(
-              "w-20 h-20 rounded-md bg-cover bg-center flex-shrink-0",
-              "transition-transform duration-500 group-hover:scale-[1.03]"
-            )}
-            style={{ backgroundImage: `url(${article.image})` }}
-          />
           <div>
             <h3 className="font-medium group-hover:text-primary transition-colors duration-300 line-clamp-2">
               {article.title}
@@ -75,13 +68,6 @@ const ArticleCard = ({
         className
       )}
     >
-      <div 
-        className={cn(
-          "aspect-[16/9] rounded-lg bg-cover bg-center",
-          "transition-transform duration-500 ease-out group-hover:scale-[1.02]"
-        )}
-        style={{ backgroundImage: `url(${article.image})` }}
-      />
       <div className="mt-4">
         <div className="flex items-center text-xs mb-2">
           <span className="bg-primary/10 text-primary px-2 py-0.5 rounded-full">
@@ -97,11 +83,6 @@ const ArticleCard = ({
         </h3>
         <p className="mt-2 text-muted-foreground line-clamp-2">{article.excerpt}</p>
         <div className="mt-4 flex items-center">
-          <img 
-            src={article.author.avatar} 
-            alt={article.author.name}
-            className="w-8 h-8 rounded-full mr-3"
-          />
           <span className="text-sm font-medium">{article.author.name}</span>
         </div>
       </div>

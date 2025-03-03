@@ -77,11 +77,6 @@ const Article = () => {
           </p>
 
           <div className="flex items-center mb-8 pb-8 border-b border-border/40">
-            <img
-              src={article.author.avatar}
-              alt={article.author.name}
-              className="w-12 h-12 rounded-full mr-4"
-            />
             <div>
               <div className="font-medium">{article.author.name}</div>
               <div className="text-sm text-muted-foreground">
@@ -92,11 +87,6 @@ const Article = () => {
         </div>
 
         <div className="max-w-4xl mx-auto mb-16">
-          <div 
-            className="w-full aspect-[2/1] rounded-lg bg-cover bg-center mb-10 animate-blur-in"
-            style={{ backgroundImage: `url(${article.image})` }}
-          />
-          
           <div 
             className="max-w-3xl mx-auto article-content"
             dangerouslySetInnerHTML={{ __html: article.content }}
