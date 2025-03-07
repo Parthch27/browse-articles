@@ -84,7 +84,10 @@ const MainLayout = ({ children }: MainLayoutProps) => {
           </div>
         </div>
       </div>
-      <Footer />
+      {/* Removed Footer from here */}
+      <div className="fixed bottom-0 left-0 z-10 w-full md:w-auto">
+        <Footer />
+      </div>
     </div>
   );
 };
