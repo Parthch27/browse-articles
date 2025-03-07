@@ -1,6 +1,6 @@
 
 import { Link, useLocation } from "react-router-dom";
-import { Home, Clock, Star, Bell, Search } from "lucide-react";
+import { Home, Clock, Bookmark, Search, User, Settings, Star, Tag } from "lucide-react";
 import { categories } from "@/data/articles";
 import { cn } from "@/lib/utils";
 
@@ -10,33 +10,36 @@ const Sidebar = () => {
   const menuItems = [
     { icon: <Home size={18} />, name: "Home", path: "/" },
     { icon: <Clock size={18} />, name: "Recent", path: "/recent" },
-    { icon: <Star size={18} />, name: "Topics", path: "/topics" },
-    { icon: <Bell size={18} />, name: "Notifications", path: "/notifications" },
-    { icon: <Search size={18} />, name: "Search", path: "/search" },
+    { icon: <Bookmark size={18} />, name: "Saved", path: "/saved" },
   ];
 
   return (
-    <aside className="hidden md:flex flex-col w-64 p-4 border-r border-border shrink-0">
-      <div className="space-y-1 mb-6">
-        {menuItems.map((item) => (
-          <Link
-            key={item.name}
-            to={item.path}
-            className={cn(
-              "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium",
-              location.pathname === item.path
-                ? "bg-primary text-primary-foreground"
-                : "text-foreground hover:bg-primary/10 transition-colors"
-            )}
-          >
-            {item.icon}
-            <span>{item.name}</span>
-          </Link>
-        ))}
-      </div>
+    <aside className="hidden md:flex flex-col w-56 border-r border-border shrink-0">
+      <div className="py-4 px-3">
+        <div className="mb-1">
+          <span className="text-xs font-medium text-muted-foreground">MAIN</span>
+        </div>
+        <div className="space-y-1 mb-6">
+          {menuItems.map((item) => (
+            <Link
+              key={item.name}
+              to={item.path}
+              className={cn(
+                "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium",
+                location.pathname === item.path
+                  ? "bg-primary text-primary-foreground"
+                  : "text-foreground hover:bg-primary/10 transition-colors"
+              )}
+            >
+              {item.icon}
+              <span>{item.name}</span>
+            </Link>
+          ))}
+        </div>
 
-      <div className="pt-4 border-t border-border">
-        <h3 className="font-semibold text-sm mb-3 px-3">Categories</h3>
+        <div className="mb-1">
+          <span className="text-xs font-medium text-muted-foreground">TOPICS</span>
+        </div>
         <div className="space-y-1">
           {categories.map((category) => (
             <Link
@@ -49,7 +52,11 @@ const Sidebar = () => {
                   : "text-foreground hover:bg-primary/10 transition-colors"
               )}
             >
-              {category.name}
+              {category.name === "Technology" && <Tag size={18} />}
+              {category.name === "Design" && <Star size={18} />}
+              {category.name === "Business" && <User size={18} />}
+              {category.name === "Culture" && <Settings size={18} />}
+              <span>{category.name}</span>
             </Link>
           ))}
         </div>

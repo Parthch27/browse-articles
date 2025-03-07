@@ -3,104 +3,196 @@ import { useState } from "react";
 import { articles } from "@/data/articles";
 import MainLayout from "@/layouts/MainLayout";
 import { Button } from "@/components/ui/button";
-import { Search } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import ArticleCard from "@/components/ArticleCard";
 import { Badge } from "@/components/ui/badge";
+import { MessageSquare, ArrowRight } from "lucide-react";
 
 export default function Index() {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
-
-  // Filter articles based on search query and selected filters
-  const filteredArticles = articles.filter((article) => {
-    // Search filter
-    const matchesSearch = searchQuery === "" || 
-      article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      article.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
-    
-    // Category filter
-    const matchesFilter = selectedFilters.length === 0 || 
-      selectedFilters.includes(article.category.slug);
-    
-    return matchesSearch && matchesFilter;
-  });
-
-  const toggleFilter = (filter: string) => {
-    setSelectedFilters(prev => 
-      prev.includes(filter) 
-        ? prev.filter(f => f !== filter) 
-        : [...prev, filter]
-    );
-  };
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  
+  // Filter articles based on active category
+  const filteredArticles = activeCategory 
+    ? articles.filter(article => article.category.slug === activeCategory)
+    : articles;
 
   return (
     <MainLayout>
-      <div className="container mx-auto">
-        <div className="mb-8 space-y-4">
-          <h1 className="text-3xl font-bold text-center">Browse Articles</h1>
-          <p className="text-muted-foreground text-center max-w-2xl mx-auto">
-            Discover the latest articles, insights, and stories across various topics
-          </p>
-          
-          <div className="relative max-w-md mx-auto">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" size={18} />
-            <Input
-              type="text"
-              placeholder="Search articles..."
-              className="pl-10"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
+      <div className="w-full">
+        {/* Filter by Category */}
+        <div className="sticky top-16 z-10 bg-background/95 backdrop-blur-sm border-b border-border py-3 px-4">
+          <div className="flex items-center gap-2 overflow-x-auto hide-scrollbar">
+            <span className="text-sm font-medium whitespace-nowrap">Filter by Category:</span>
+            <Badge
+              key="all"
+              variant={activeCategory === null ? "default" : "outline"}
+              className="cursor-pointer whitespace-nowrap"
+              onClick={() => setActiveCategory(null)}
+            >
+              All
+            </Badge>
+            {articles.reduce<string[]>((acc, article) => {
+              if (!acc.includes(article.category.slug)) {
+                acc.push(article.category.slug);
+              }
+              return acc;
+            }, []).map(category => {
+              const categoryObj = articles.find(article => article.category.slug === category)?.category;
+              if (!categoryObj) return null;
+              
+              return (
+                <Badge 
+                  key={category}
+                  variant={activeCategory === category ? "default" : "outline"}
+                  className="cursor-pointer whitespace-nowrap"
+                  onClick={() => setActiveCategory(category === activeCategory ? null : category)}
+                >
+                  {categoryObj.name}
+                </Badge>
+              );
+            })}
           </div>
         </div>
 
-        <div className="mb-6 flex flex-wrap gap-2 justify-center">
-          {articles.reduce<string[]>((acc, article) => {
-            if (!acc.includes(article.category.slug)) {
-              acc.push(article.category.slug);
-            }
-            return acc;
-          }, []).map(category => {
-            const categoryObj = articles.find(article => article.category.slug === category)?.category;
-            if (!categoryObj) return null;
+        {/* Featured Thread */}
+        <div className="bg-secondary/30 p-4 border-b border-border">
+          <div className="flex items-start gap-3">
+            <div className="flex flex-col items-center">
+              <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-sm font-medium">
+                {articles[0].author.name.charAt(0)}
+              </div>
+              <div className="h-full w-px bg-border my-2"></div>
+            </div>
             
-            return (
-              <Badge 
-                key={category}
-                variant={selectedFilters.includes(category) ? "default" : "outline"}
-                className="cursor-pointer"
-                onClick={() => toggleFilter(category)}
-              >
-                {categoryObj.name}
-              </Badge>
-            );
-          })}
+            <div className="flex-1">
+              <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
+                <span className="font-medium">{articles[0].author.name}</span>
+                <span>•</span>
+                <span>Posted by {articles[0].author.name}</span>
+                <span>•</span>
+                <span>{new Date(articles[0].publishedAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
+              </div>
+              
+              <h2 className="text-lg font-bold mb-1">The Future of Interface Design</h2>
+              
+              <p className="text-sm text-muted-foreground mb-2">
+                Exploring new interactions and methodologies that will shape the next generation of digital interfaces and information models.
+              </p>
+              
+              <div className="flex items-center justify-between">
+                <div className="flex gap-2">
+                  <Badge variant="outline" className="bg-primary/5">{articles[0].category.name}</Badge>
+                </div>
+                
+                <Button variant="ghost" size="sm" className="text-xs gap-1">
+                  Read Full Thread <ArrowRight size={14} />
+                </Button>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredArticles.length > 0 ? (
-            filteredArticles.map((article) => (
-              <ArticleCard key={article.id} article={article} />
-            ))
-          ) : (
-            <div className="col-span-full text-center py-12">
-              <h3 className="text-xl font-medium mb-2">No articles found</h3>
-              <p className="text-muted-foreground">
-                Try adjusting your search or filter criteria
-              </p>
-              <Button 
-                variant="outline" 
-                className="mt-4"
-                onClick={() => {
-                  setSearchQuery("");
-                  setSelectedFilters([]);
-                }}
-              >
-                Clear filters
+        <div className="pt-6 px-4">
+          <h2 className="text-xl font-bold mb-4">Latest Posts</h2>
+          <div className="space-y-6">
+            {filteredArticles.slice(0, 4).map((article, index) => (
+              <div key={article.id} className="border-b border-border pb-6 last:border-0">
+                <div className="flex items-start gap-3">
+                  <div className="flex flex-col items-center">
+                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-sm font-medium">
+                      {article.author.name.charAt(0)}
+                    </div>
+                    <div className="h-full w-px bg-border my-2"></div>
+                  </div>
+                  
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
+                      <span className="font-medium">{article.author.name}</span>
+                      <span>•</span>
+                      <span>Posted by {article.author.name}</span>
+                      <span>•</span>
+                      <span>{new Date(article.publishedAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
+                    </div>
+                    
+                    <h3 className="text-base font-semibold mb-1">{article.title}</h3>
+                    
+                    <p className="text-sm text-muted-foreground mb-2">
+                      {article.excerpt}
+                    </p>
+                    
+                    <div className="flex items-center justify-between">
+                      <div className="flex gap-2">
+                        <Badge variant="outline" className="bg-primary/5">{article.category.name}</Badge>
+                      </div>
+                      
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                        <button className="flex items-center gap-1">
+                          <MessageSquare size={14} />
+                          <span>{Math.floor(Math.random() * 10) + 1} Comments</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="px-4 pt-6 pb-10">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-bold">More Posts</h2>
+            <div>
+              <Button variant="outline" size="sm" className="mr-2">
+                Newest
+              </Button>
+              <Button variant="ghost" size="sm">
+                Trending
               </Button>
             </div>
-          )}
+          </div>
+          
+          <div className="space-y-6">
+            {filteredArticles.slice(4, 8).map((article) => (
+              <div key={article.id} className="border-b border-border pb-6 last:border-0">
+                <div className="flex items-start gap-3">
+                  <div className="flex flex-col items-center">
+                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-sm font-medium">
+                      {article.author.name.charAt(0)}
+                    </div>
+                    <div className="h-full w-px bg-border my-2"></div>
+                  </div>
+                  
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
+                      <span className="font-medium">{article.author.name}</span>
+                      <span>•</span>
+                      <span>Posted by {article.author.name}</span>
+                      <span>•</span>
+                      <span>{new Date(article.publishedAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
+                    </div>
+                    
+                    <h3 className="text-base font-semibold mb-1">{article.title}</h3>
+                    
+                    <p className="text-sm text-muted-foreground mb-2">
+                      {article.excerpt}
+                    </p>
+                    
+                    <div className="flex items-center justify-between">
+                      <div className="flex gap-2">
+                        <Badge variant="outline" className="bg-primary/5">{article.category.name}</Badge>
+                      </div>
+                      
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                        <button className="flex items-center gap-1">
+                          <MessageSquare size={14} />
+                          <span>{Math.floor(Math.random() * 10) + 1} Comments</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </MainLayout>
