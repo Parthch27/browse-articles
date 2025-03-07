@@ -4,20 +4,15 @@ import { articles } from "@/data/articles";
 import MainLayout from "@/layouts/MainLayout";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MessageSquare, ArrowRight, TrendingUp, Star, Clock, Share2 } from "lucide-react";
+import { MessageSquare, ArrowRight, TrendingUp, Star, Clock, Share2, Pin } from "lucide-react";
 import { toast } from "sonner";
 
 export default function Index() {
-  const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [pinnedArticles, setPinnedArticles] = useState<string[]>([]);
   const [activeFilter, setActiveFilter] = useState<string>("latest");
-  
-  // Filter articles based on active category
-  const filteredArticles = activeCategory 
-    ? articles.filter(article => article.category.slug === activeCategory)
-    : articles;
 
   // Filter based on selected filter (trending, popular, latest)
-  const sortedArticles = [...filteredArticles].sort((a, b) => {
+  const sortedArticles = [...articles].sort((a, b) => {
     if (activeFilter === "trending") {
       // Sort by trending (using publishedAt as a proxy for trending)
       return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
@@ -36,50 +31,31 @@ export default function Index() {
     toast.success("Link copied to clipboard");
   };
 
+  const togglePinArticle = (articleId: string) => {
+    setPinnedArticles(prev => {
+      if (prev.includes(articleId)) {
+        toast.success("Article unpinned");
+        return prev.filter(id => id !== articleId);
+      } else {
+        toast.success("Article pinned");
+        return [...prev, articleId];
+      }
+    });
+  };
+
+  // Featured Thread
   return (
     <MainLayout>
       <div className="w-full">
-        {/* Filter by Category */}
-        <div className="sticky top-16 z-10 bg-background/95 backdrop-blur-sm border-b border-border py-3 px-4">
-          <div className="flex items-center gap-2 overflow-x-auto hide-scrollbar">
-            <span className="text-sm font-medium whitespace-nowrap">Filter by Category:</span>
-            <Badge
-              key="all"
-              variant={activeCategory === null ? "default" : "outline"}
-              className="cursor-pointer whitespace-nowrap"
-              onClick={() => setActiveCategory(null)}
-            >
-              All
-            </Badge>
-            {articles.reduce<string[]>((acc, article) => {
-              if (!acc.includes(article.category.slug)) {
-                acc.push(article.category.slug);
-              }
-              return acc;
-            }, []).map(category => {
-              const categoryObj = articles.find(article => article.category.slug === category)?.category;
-              if (!categoryObj) return null;
-              
-              return (
-                <Badge 
-                  key={category}
-                  variant={activeCategory === category ? "default" : "outline"}
-                  className="cursor-pointer whitespace-nowrap"
-                  onClick={() => setActiveCategory(category === activeCategory ? null : category)}
-                >
-                  {categoryObj.name}
-                </Badge>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Featured Thread */}
         <div className="bg-secondary/30 p-4 border-b border-border">
           <div className="flex items-start gap-3">
             <div className="flex flex-col items-center">
-              <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-sm font-medium">
-                {articles[0].author.name.charAt(0)}
+              <div className="w-12 h-12 rounded-full overflow-hidden">
+                <img 
+                  src={`https://images.unsplash.com/photo-1649972904349-6e44c42644a7?w=100&h=100&fit=crop`} 
+                  alt={articles[0].author.name} 
+                  className="w-full h-full object-cover"
+                />
               </div>
               <div className="h-full w-px bg-border my-2"></div>
             </div>
@@ -113,6 +89,16 @@ export default function Index() {
                   >
                     <Share2 size={14} />
                     Share
+                  </Button>
+                  
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="text-xs gap-1"
+                    onClick={() => togglePinArticle(articles[0].id)}
+                  >
+                    <Pin size={14} className={pinnedArticles.includes(articles[0].id) ? "text-primary" : ""} />
+                    {pinnedArticles.includes(articles[0].id) ? "Pinned" : "Pin"}
                   </Button>
                   
                   <Button variant="ghost" size="sm" className="text-xs gap-1">
@@ -163,8 +149,12 @@ export default function Index() {
               <div key={article.id} className="border-b border-border pb-6 last:border-0">
                 <div className="flex items-start gap-3">
                   <div className="flex flex-col items-center">
-                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-sm font-medium">
-                      {article.author.name.charAt(0)}
+                    <div className="w-12 h-12 rounded-full overflow-hidden">
+                      <img 
+                        src={`https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=100&h=100&fit=crop&q=80&auto=format`} 
+                        alt={article.author.name} 
+                        className="w-full h-full object-cover"
+                      />
                     </div>
                     <div className="h-full w-px bg-border my-2"></div>
                   </div>
@@ -200,6 +190,16 @@ export default function Index() {
                           <span>Share</span>
                         </Button>
                         
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="flex items-center gap-1 text-xs text-muted-foreground"
+                          onClick={() => togglePinArticle(article.id)}
+                        >
+                          <Pin size={14} className={pinnedArticles.includes(article.id) ? "text-primary" : ""} />
+                          <span>{pinnedArticles.includes(article.id) ? "Pinned" : "Pin"}</span>
+                        </Button>
+                        
                         <Button variant="ghost" size="sm" className="flex items-center gap-1 text-xs text-muted-foreground">
                           <MessageSquare size={14} />
                           <span>{Math.floor(Math.random() * 10) + 1} Comments</span>
@@ -223,8 +223,12 @@ export default function Index() {
               <div key={article.id} className="border-b border-border pb-6 last:border-0">
                 <div className="flex items-start gap-3">
                   <div className="flex flex-col items-center">
-                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-sm font-medium">
-                      {article.author.name.charAt(0)}
+                    <div className="w-12 h-12 rounded-full overflow-hidden">
+                      <img 
+                        src={`https://images.unsplash.com/photo-1518770660439-4636190af475?w=100&h=100&fit=crop&q=80&auto=format`} 
+                        alt={article.author.name} 
+                        className="w-full h-full object-cover"
+                      />
                     </div>
                     <div className="h-full w-px bg-border my-2"></div>
                   </div>
@@ -258,6 +262,16 @@ export default function Index() {
                         >
                           <Share2 size={14} />
                           <span>Share</span>
+                        </Button>
+                        
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="flex items-center gap-1 text-xs text-muted-foreground"
+                          onClick={() => togglePinArticle(article.id)}
+                        >
+                          <Pin size={14} className={pinnedArticles.includes(article.id) ? "text-primary" : ""} />
+                          <span>{pinnedArticles.includes(article.id) ? "Pinned" : "Pin"}</span>
                         </Button>
                         
                         <Button variant="ghost" size="sm" className="flex items-center gap-1 text-xs text-muted-foreground">
