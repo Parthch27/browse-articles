@@ -1,14 +1,23 @@
 
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Search } from "lucide-react";
+import { Search, Moon, Sun } from "lucide-react";
 import { cn } from "@/lib/utils";
 import SearchBar from "./SearchBar";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    // Check if user has a preference saved, otherwise default to system preference
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme) {
+      return savedTheme === "dark";
+    }
+    return window.matchMedia("(prefers-color-scheme: dark)").matches;
+  });
   const location = useLocation();
 
   useEffect(() => {
@@ -23,6 +32,20 @@ const Navbar = () => {
   useEffect(() => {
     setIsSearchOpen(false);
   }, [location.pathname]);
+
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+    }
+  }, [isDarkMode]);
+
+  const toggleTheme = () => {
+    setIsDarkMode(!isDarkMode);
+  };
 
   return (
     <header
@@ -53,6 +76,17 @@ const Navbar = () => {
             />
           </div>
         </div>
+
+        {/* Dark Mode Toggle */}
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          onClick={toggleTheme}
+          className="ml-4"
+          aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
+        >
+          {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
+        </Button>
 
         {/* Search Overlay */}
         {isSearchOpen && (
