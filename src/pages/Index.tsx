@@ -4,11 +4,10 @@ import { articles } from "@/data/articles";
 import MainLayout from "@/layouts/MainLayout";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MessageSquare, ArrowRight, TrendingUp, Star, Clock, Share2, Pin } from "lucide-react";
+import { MessageSquare, ArrowRight, TrendingUp, Star, Clock, Share2 } from "lucide-react";
 import { toast } from "sonner";
 
 export default function Index() {
-  const [pinnedArticles, setPinnedArticles] = useState<string[]>([]);
   const [activeFilter, setActiveFilter] = useState<string>("latest");
 
   // Filter based on selected filter (trending, popular, latest)
@@ -29,18 +28,6 @@ export default function Index() {
     // In a real app, we'd implement actual sharing functionality
     navigator.clipboard.writeText(`Check out this article: ${articleTitle}`);
     toast.success("Link copied to clipboard");
-  };
-
-  const togglePinArticle = (articleId: string) => {
-    setPinnedArticles(prev => {
-      if (prev.includes(articleId)) {
-        toast.success("Article unpinned");
-        return prev.filter(id => id !== articleId);
-      } else {
-        toast.success("Article pinned");
-        return [...prev, articleId];
-      }
-    });
   };
 
   // Featured Thread
@@ -89,16 +76,6 @@ export default function Index() {
                   >
                     <Share2 size={14} />
                     Share
-                  </Button>
-                  
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    className="text-xs gap-1"
-                    onClick={() => togglePinArticle(articles[0].id)}
-                  >
-                    <Pin size={14} className={pinnedArticles.includes(articles[0].id) ? "text-primary" : ""} />
-                    {pinnedArticles.includes(articles[0].id) ? "Pinned" : "Pin"}
                   </Button>
                   
                   <Button variant="ghost" size="sm" className="text-xs gap-1">
@@ -190,16 +167,6 @@ export default function Index() {
                           <span>Share</span>
                         </Button>
                         
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          className="flex items-center gap-1 text-xs text-muted-foreground"
-                          onClick={() => togglePinArticle(article.id)}
-                        >
-                          <Pin size={14} className={pinnedArticles.includes(article.id) ? "text-primary" : ""} />
-                          <span>{pinnedArticles.includes(article.id) ? "Pinned" : "Pin"}</span>
-                        </Button>
-                        
                         <Button variant="ghost" size="sm" className="flex items-center gap-1 text-xs text-muted-foreground">
                           <MessageSquare size={14} />
                           <span>{Math.floor(Math.random() * 10) + 1} Comments</span>
@@ -262,16 +229,6 @@ export default function Index() {
                         >
                           <Share2 size={14} />
                           <span>Share</span>
-                        </Button>
-                        
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          className="flex items-center gap-1 text-xs text-muted-foreground"
-                          onClick={() => togglePinArticle(article.id)}
-                        >
-                          <Pin size={14} className={pinnedArticles.includes(article.id) ? "text-primary" : ""} />
-                          <span>{pinnedArticles.includes(article.id) ? "Pinned" : "Pin"}</span>
                         </Button>
                         
                         <Button variant="ghost" size="sm" className="flex items-center gap-1 text-xs text-muted-foreground">
